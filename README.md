@@ -10,6 +10,7 @@
 ## 特点
 - 自动检查 /system_ext/app/SoterService 文件夹
 - 拦截 SoterService.apk 文件调用
+- 拦截 SoterService.vdex 文件调用
 - 不使用 hook 和 Xposed 技术
 - 通过系统属性和权限限制实现拦截
 
