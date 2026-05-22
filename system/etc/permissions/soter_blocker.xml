@@ -1,0 +1,5 @@
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;permissions&gt;
+    &lt;!-- 阻止特定包名访问 Soter 相关功能 --&gt;
+&lt;/permissions&gt;
