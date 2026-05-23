@@ -3,43 +3,44 @@
 
 MODDIR=${0%/*}
 
-sleep 30
+sleep 20
 
-log -t SoterBlocker "开始拦截 com.chunqiunativecheck 对 SoterService 的调用"
+log -t SoterBlocker "=== 开始强制拦截 SoterService ==="
 
-# 检查 /system_ext/app/SoterService 文件夹
-if [ -d "/system_ext/app/SoterService" ]; then
-    log -t SoterBlocker "检测到 SoterService 文件夹"
+# 强力拦截方法1: 直接禁用 SoterService 应用/组件
+if command -v pm &gt;/dev/null 2&gt;&amp;1; then
+    # 尝试禁用可能的 SoterService 包名
+    pm disable-user --user 0 com.tencent.soter 2&gt;/dev/null || true
+    pm disable-user --user 0 com.tencent.soter.service 2&gt;/dev/null || true
+    pm disable-user --user 0 com.soter.service 2&gt;/dev/null || true
+    
+    # 禁用所有可能的 Soter 相关组件
+    pm disable --user 0 com.tencent.soter/.service.SoterService 2&gt;/dev/null || true
+    pm disable --user 0 com.tencent.soter/.SoterService 2&gt;/dev/null || true
+    
+    log -t SoterBlocker "已尝试禁用 SoterService 应用/组件"
 fi
 
-# 检查并拦截 SoterService.apk
-if [ -f "/system_ext/app/SoterService/SoterService.apk" ]; then
-    log -t SoterBlocker "检测到 SoterService.apk"
-fi
+# 强力拦截方法2: 权限限制 - 文件夹和相关文件
+chmod 000 /system_ext/app/SoterService 2&gt;/dev/null || true
+chmod 000 /system_ext/app/SoterService/SoterService.apk 2&gt;/dev/null || true
+chmod 000 /system_ext/app/SoterService/oat/arm64/SoterService.vdex 2&gt;/dev/null || true
+chmod 000 /system_ext/app/SoterService/oat/arm64/SoterService.odex 2&gt;/dev/null || true
+chmod 000 /system/app/SoterService 2&gt;/dev/null || true
+chmod 000 /system/app/SoterService/SoterService.apk 2&gt;/dev/null || true
+chmod 000 /system/app/SoterService/oat/arm64/SoterService.vdex 2&gt;/dev/null || true
+chmod 000 /system/app/SoterService/oat/arm64/SoterService.odex 2&gt;/dev/null || true
 
-# 检查并拦截 SoterService.vdex
-if [ -f "/system_ext/app/SoterService/oat/arm64/SoterService.vdex" ]; then
-    log -t SoterBlocker "检测到 SoterService.vdex"
-fi
-
-# 强制拦截方法1: 权限限制 - 文件夹和相关文件
-chmod 000 /system_ext/app/SoterService 2>/dev/null || true
-chmod 000 /system_ext/app/SoterService/SoterService.apk 2>/dev/null || true
-chmod 000 /system_ext/app/SoterService/oat/arm64/SoterService.vdex 2>/dev/null || true
-chmod 000 /system/app/SoterService 2>/dev/null || true
-chmod 000 /system/app/SoterService/SoterService.apk 2>/dev/null || true
-chmod 000 /system/app/SoterService/oat/arm64/SoterService.vdex 2>/dev/null || true
-
-# 强制拦截方法2: 禁用相关系统属性
+# 强力拦截方法3: 禁用相关系统属性
 setprop persist.sys.soter.enable false
 setprop ro.soter.service false
+setprop soter.service.enabled false
 
-# 强制拦截方法3: 针对 com.chunqiunativecheck 包名的特殊处理
-# 限制该应用的权限
-if command -v appops &gt;/dev/null 2&gt;&amp;1; then
-    appops set com.chunqiunativecheck GET_USAGE_STATS ignore 2&gt;/dev/null || true
-    appops set com.chunqiunativecheck RUN_IN_BACKGROUND ignore 2&gt;/dev/null || true
-    log -t SoterBlocker "已通过 appops 限制 com.chunqiunativecheck"
+# 强力拦截方法4: 尝试用 mount 隐藏文件
+if [ -d "/system_ext/app/SoterService" ]; then
+    mkdir -p /data/local/tmp/soter_empty
+    mount --bind /data/local/tmp/soter_empty /system_ext/app/SoterService 2&gt;/dev/null || true
+    log -t SoterBlocker "已尝试 mount 隐藏 SoterService 文件夹"
 fi
 
-log -t SoterBlocker "SoterService 拦截已完成 - 专门针对 com.chunqiunativecheck"
+log -t SoterBlocker "=== SoterService 强制拦截完成 ==="

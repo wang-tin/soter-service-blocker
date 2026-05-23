@@ -1,7 +1,7 @@
 id=soter_service_blocker
 name=SoterService拦截器
-version=v1.3
-versionCode=4
+version=v1.4
+versionCode=5
 author=王听
-description=专门强制拦截com.chunqiunativecheck对SoterService的调用
+description=强力拦截SoterService - 不使用hook/Xposed
 updateJson=
