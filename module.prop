@@ -1,7 +1,7 @@
 id=soter_service_blocker
 name=SoterService拦截器
-version=v1.2
-versionCode=3
+version=v1.3
+versionCode=4
 author=王听
-description=拦截com.chunqiunativecheck对SoterService的调用（包含APK和vdex文件）
+description=专门强制拦截com.chunqiunativecheck对SoterService的调用
 updateJson=

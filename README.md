@@ -5,14 +5,15 @@
 王听
 
 ## 功能
-拦截 com.chunqiunativecheck 对 SoterService 的调用
+专门强制拦截 com.chunqiunativecheck 对 SoterService 的调用
 
 ## 特点
+- 专门针对 com.chunqiunativecheck 包名
 - 自动检查 /system_ext/app/SoterService 文件夹
 - 拦截 SoterService.apk 文件调用
 - 拦截 SoterService.vdex 文件调用
 - 不使用 hook 和 Xposed 技术
-- 通过系统属性和权限限制实现拦截
+- 通过系统属性、权限限制和 appops 实现强制拦截
 
 ## 免责声明
 本模块仅供学习和研究使用。使用本模块所产生的一切后果由使用者自行承担，作者不承担任何责任。请遵守当地法律法规，不要将本模块用于非法用途。
