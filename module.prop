@@ -1,7 +1,8 @@
+
 id=soter_service_blocker
 name=SoterService拦截器
-version=v1.7
-versionCode=8
+version=v1.8
+versionCode=9
 author=王听
-description=强力拦截SoterService - 不冻结/删除应用
+description=安全版 - 不会影响开机
 updateJson=
