@@ -8,31 +8,26 @@
 强力拦截 SoterService，阻止任何应用（包括 com.chunqiunativecheck）调用它
 
 ## 特点
-- 10 种强力拦截方法
+- **不冻结/删除应用**
+- 6 种安全的拦截方法
 - 完整日志记录
 - 自动回滚机制
 - 支持 Android 10-14
 - 不使用 hook 和 Xposed 技术
 
-## 10 种拦截方法
-1. **pm disable**：直接禁用 SoterService 应用和组件
-2. **权限限制**：chmod 000 阻止访问相关文件
-3. **系统属性**：禁用 soter 和 zygote 相关系统属性
-4. **SELinux 策略**：临时设置为宽容模式
-5. **iptables 规则**：阻止网络连接和特定端口
-6. **系统库替换**：替换 libsoter.so 为空文件
-7. **Mount 隐藏**：用 mount bind 隐藏文件夹
-8. **Zygote 拦截**：设置特殊属性和标记文件
-9. **应用冻结**：冻结/卸载 com.chunqiunativecheck
-10. **持久化**：确保重启后持续生效
+## 6 种拦截方法
+1. **系统属性**：禁用 soter 和 zygote 相关系统属性
+2. **SELinux 策略**：临时设置为宽容模式
+3. **iptables 规则**：阻止端口 843 网络连接
+4. **Mount 隐藏**：用 mount bind 隐藏文件夹
+5. **Zygote 拦截**：设置特殊属性和标记文件
+6. **持久化**：确保重启后持续生效
 
 ## 拦截范围
 - SoterService 文件夹
-- SoterService.apk
-- SoterService.vdex / .odex
-- libsoter.so 系统库
-- com.chunqiunativecheck 应用
-- Soter 相关网络连接（端口 843）
+- Soter 相关系统属性
+- 端口 843 网络连接
+- 通过 Zygote 的加载尝试
 
 ## 兼容版本
 - Android 10 (Q)
@@ -44,7 +39,6 @@
 ## 日志文件
 - 主日志：`/data/local/tmp/soter_blocker_log.txt`
 - 错误日志：`/data/local/tmp/soter_blocker_error.txt`
-- 状态备份：`/data/local/tmp/soter_backup_state`
 
 ## 常见问题
 
@@ -62,26 +56,17 @@ iptables -L OUTPUT -n
 
 ### Q2: 卸载后如何恢复？
 模块卸载脚本会自动恢复：
-- 系统库（从 .bak 备份恢复）
-- 文件权限（改为 644）
 - iptables 规则（清除）
 - 临时文件（清理）
 
-### Q3: 拦截会影响其他应用吗？
-- 主要影响 SoterService 和 com.chunqiunativecheck
-- 可能影响依赖 Soter 的其他腾讯系应用（如微信支付）
-- 网络规则可能影响部分功能
+### Q3: 会影响其他应用吗？
+- 主要影响 SoterService 相关功能
+- 不会冻结或删除任何应用
 
 ### Q4: 模块不工作怎么办？
 1. 检查日志文件
 2. 确保 Magisk 已获取 root 权限
-3. 尝试手动执行：
-   ```bash
-   sh /data/local/tmp/soter_disable.sh
-   ```
-
-### Q5: 如何临时禁用拦截？
-删除模块后重启即可自动恢复系统状态。
+3. 查看哪些方法成功/失败
 
 ## 免责声明
 本模块仅供学习和研究使用。使用本模块所产生的一切后果由使用者自行承担，作者不承担任何责任。请遵守当地法律法规，不要将本模块用于非法用途。
@@ -95,9 +80,17 @@ iptables -L OUTPUT -n
 1. 在 Magisk Manager 中禁用本模块
 2. 重启设备
 3. 再次在 Magisk Manager 中完全卸载
-4. 模块会自动恢复系统状态
+4. 模块会自动清理临时文件
 
 ## 更新日志
+
+### v1.7
+- ✅ 移除 pm disable 应用和组件（系统只读失败）
+- ✅ 移除权限限制（无法修改系统分区）
+- ✅ 移除 iptables UID 规则（失败）
+- ✅ 移除应用冻结和卸载功能
+- ✅ 只保留工作良好的 6 种方法
+- ✅ 优化代码，减少错误日志
 
 ### v1.6
 - 添加完整日志系统
