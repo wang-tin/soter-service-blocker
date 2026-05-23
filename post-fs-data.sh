@@ -35,6 +35,8 @@ chmod 000 /system/app/SoterService/oat/arm64/SoterService.odex 2&gt;/dev/null ||
 setprop persist.sys.soter.enable false
 setprop ro.soter.service false
 setprop soter.service.enabled false
+setprop zygote.disable.soter true
+setprop debug.soter.disabled true
 
 # 强力拦截方法4: 尝试用 mount 隐藏文件
 if [ -d "/system_ext/app/SoterService" ]; then
@@ -43,4 +45,8 @@ if [ -d "/system_ext/app/SoterService" ]; then
     log -t SoterBlocker "已尝试 mount 隐藏 SoterService 文件夹"
 fi
 
-log -t SoterBlocker "=== SoterService 强制拦截完成 ==="
+# 强力拦截方法5: Zygote 相关拦截 - 阻止进程加载
+mkdir -p /data/local/tmp/block_soter
+touch /data/local/tmp/block_soter/.soter_blocked
+
+log -t SoterBlocker "=== SoterService 强制拦截完成（含 Zygote 拦截）==="

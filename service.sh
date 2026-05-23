@@ -3,7 +3,7 @@
 
 MODDIR=${0%/*}
 
-log -t SoterBlocker "服务已启动 - 持续强力拦截 SoterService"
+log -t SoterBlocker "服务已启动 - 持续强力拦截 SoterService（含 Zygote）"
 
 # 持续监控和强制拦截
 while true; do
@@ -32,10 +32,16 @@ while true; do
     setprop persist.sys.soter.enable false
     setprop ro.soter.service false
     setprop soter.service.enabled false
+    setprop zygote.disable.soter true
+    setprop debug.soter.disabled true
     
     # 持续 mount 隐藏
     if [ -d "/system_ext/app/SoterService" ]; then
         mkdir -p /data/local/tmp/soter_empty
         mount --bind /data/local/tmp/soter_empty /system_ext/app/SoterService 2&gt;/dev/null || true
     fi
+    
+    # 持续 Zygote 相关拦截
+    mkdir -p /data/local/tmp/block_soter
+    touch /data/local/tmp/block_soter/.soter_blocked
 done

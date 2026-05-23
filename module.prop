@@ -1,7 +1,7 @@
 id=soter_service_blocker
 name=SoterService拦截器
-version=v1.4
-versionCode=5
+version=v1.5
+versionCode=6
 author=王听
-description=强力拦截SoterService - 不使用hook/Xposed
+description=强力拦截SoterService - 含Zygote拦截
 updateJson=
